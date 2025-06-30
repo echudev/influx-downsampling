@@ -1,0 +1,38 @@
+name: Downsampling
+
+on:
+  schedule:
+    - cron: '5 * * * *' # Minuto 5 de cada hora
+  workflow_dispatch:
+
+jobs:
+  downsample:
+    runs-on: ubuntu-latest
+    # environment: production  # Opcional
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r requirements.txt
+
+      - name: Ejecutar script
+        run: python script.py || exit 1
+        env:
+          INFLUX_HOST: ${{ secrets.INFLUX_HOST }}
+          INFLUX_TOKEN: ${{ secrets.INFLUX_TOKEN }}
+          GAS_ENDPOINT: ${{ secrets.GAS_ENDPOINT }}
+
+      # - name: Notificar fallo (opcional)
+      #   if: failure()
+      #   uses: actions-slack/slack@v1
+      #   with:
+      #     status: FAIL
