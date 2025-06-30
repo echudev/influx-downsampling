@@ -86,16 +86,8 @@ try:
     if datos_minutales is None:
         raise ValueError("No se obtuvieron datos de la consulta.")
    
-    
-    print(datos_minutales)
     # Convertir a DataFrame de Polars
     df = pl.from_arrow(datos_minutales)
-
-    # # Mostrar información básica
-    # print(f"DataFrame shape: {df.shape}")
-    # print(f"Columnas: {df.columns}")
-    # print(f"Primeros registros:\n{df.head()}")
-
     promedios_horarios = calcular_promedios_horarios(df)
     
     if not promedios_horarios.is_empty():
